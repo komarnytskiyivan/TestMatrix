@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+let matrix = prompt('Enter your matrix:').toUpperCase();
+let word = prompt('Enter your word:').toUpperCase();
+let msm = Math.sqrt(matrix.length);
+console.log(matrix)
+console.log(word)
+if (msm % 1 === 0) { // Check if Matrix cannot be N*N
+    let gfg = new Array(msm); // Create matrix
+    for (let i = 0; i < gfg.length; i++) {
+        gfg[i] = new Array(msm);
+    }
+    let h = 0;
+    for (let i = 0; i < msm; i++) {
+        for (let j = 0; j < msm; j++) {
+            gfg[i][j] = matrix[h++];
+        }
+    }
+    switch (word.length) { // Different cases of word
+        case 0:
+            console.log("Please enter word!!!");
+            break;
+        case 1:
+            if(MatrixFind(word[0], gfg) == 0){
+                console.log("There is no such character!!!")
+            }else{
+                console.log(MatrixFind(word[0], gfg))           
+            }
+            break;
+        case 2:
+            if(FindWay(MatrixFind(word[0], gfg), MatrixFind(word[1], gfg)) == 0){
+                console.log("There is no way!!!")
+            }else{
+            console.log(FindWay(MatrixFind(word[0], gfg), MatrixFind(word[1], gfg)));
+            }
+            break;
+        default:
+            let allWays = [];
+            for (i = 0; i < word.length; i++) {
+                allWays.push(FindWay(MatrixFind(word[i], gfg), MatrixFind(word[i + 1], gfg)));
+            }
+            if(UpdateWay(allWays, word.length - 3) == 0){
+                console.log("There is no way!!!")
+            }else{
+            console.log(UpdateWay(allWays, word.length - 3));
+            }
+    }
+} else {
+    console.log("Please enter another matrix!!!")
+}
+
+function MatrixFind(word, matrix) { // Find all characters in matrix
+    let arrayword = [];
+    for (let i = 0; i < msm; i++) {
+        for (let j = 0; j < msm; j++) {
+            if (matrix[i][j] == word) {
+                arrayword.push([i, j]);
+            }
+        }
+    }
+    return arrayword;
+}
+
+function UpdateWay(allWays = [], iterations = 0) { // Turn all ways to case ->
+    let array3 = [];
+    for (let i = 0; i < allWays.length - 1; i++) {
+        allWays[i].forEach(item1 => {
+            allWays[i + 1].forEach(item2 => {
+                if (item1.slice(-3) == item2.slice(-8, -5)) {
+                    array3.push(`${item1}->${item2.slice(-3)}`);
+                }
+            })
+        })
+    };
+    if (iterations != 0) {
+        return UpdateWay2(array3, --iterations)
+    } else {
+        return array3;
+    }
+}
+
+function UpdateWay2(allWays = [], iterations = 0) { // Turn result of UpdateWay to new array
+    let array3 = [];
+    for (let i = 0; i < allWays.length - 1; i++) {
+        if (allWays[i].slice(-3) == allWays[i + 1].slice(-8, -5)) {
+            array3.push(`${allWays[i]}->${allWays[i+1].slice(-3)}`);
+        }
+    };
+    if (iterations != 0) {
+        return UpdateWay2(array3, --iterations)
+    } else {
+        return array3;
+    }
+}
+
+function FindWay(array1, array2, ways = []) { // Find way to element checking 4 directions
+    array1.forEach(itemarray1 => {
+        array2.forEach(itemarray2 => {
+            if ((itemarray1[0] == itemarray2[0] &&
+                    (itemarray1[1] == itemarray2[1] - 1 ||
+                        itemarray1[1] == itemarray2[1] - 1)) ||
+                (itemarray1[1] == itemarray2[1] && (
+                    itemarray1[0] == itemarray2[0] - 1 ||
+                    itemarray1[0] == itemarray2[0] + 1
+                ))
+            ) {
+                ways.push(`${itemarray1}->${itemarray2}`);
+            }
+        })
+    })
+    return ways;
+}
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>
